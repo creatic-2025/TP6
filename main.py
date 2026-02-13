@@ -21,6 +21,8 @@ class GameView(arcade.View):
     def __init__(self):
         super().__init__()
 
+        self.soustitre_jeu_init = None
+        self.soustitre_jeu_round = None
         self.sprite_list = arcade.SpriteList()
         self.background_color = arcade.color.DARK_GRAY
 
@@ -30,13 +32,21 @@ class GameView(arcade.View):
         self.sprite_list.append(sprite_computer)
         self.current_status = GameState.NOT_STARTED
 
+        self.reset()
+
         # If you have sprite lists, you should create them here,
         # and set them to None
 
     def reset(self):
         """Reset the game to the initial state."""
         # Do changes needed to restart the game here if you want to support that
-        pass
+        self.soustitre_jeu_round = arcade.Text("appuye sur une image pour faire une attaque", 230, 500,
+                                               arcade.csscolor.DARK_BLUE,
+                                               25, 1, "center", "Arial")
+
+        self.soustitre_jeu_init = arcade.Text("appuye sur espace pour commencer une nouvelle ronde", 230, 500,
+                                              arcade.csscolor.DARK_BLUE,
+                                              25, 1, "center", "Arial")
 
     def on_draw(self):
         """
@@ -47,15 +57,18 @@ class GameView(arcade.View):
         # the screen to the background color, and erase what we drew last frame.
         self.clear()
         titre_jeu = arcade.Text("roche, papier, ciseaux", 375, 600, arcade.csscolor.BLACK, 40, 1, "center", "Arial")
-        soustitre_jeu_init = arcade.Text("appuye sur espace pour commencer une nouvelle ronde", 230, 500,
-                                         arcade.csscolor.DARK_BLUE,
-                                         25, 1, "center", "Arial")
-        soustitre_jeu_round = arcade.Text("appuye sur une image pour faire une attaque", 230, 500,
-                                          arcade.csscolor.DARK_BLUE,
-                                          25, 1, "center", "Arial")
-        self.sprite_list.draw()
         titre_jeu.draw()
-        soustitre_jeu_init.draw()
+        if self.current_status == GameState.NOT_STARTED:
+            self.soustitre_jeu_init.draw()
+        elif self.current_status == GameState.ROUND_ACTIVE:
+            self.soustitre_jeu_round.draw()
+        elif self.current_status == GameState.ROUND_DONE:
+            pass
+        else:
+            pass
+
+        self.sprite_list.draw()
+
         # Call draw() on all your sprite lists below
 
     def on_update(self, delta_time):
@@ -72,32 +85,13 @@ class GameView(arcade.View):
         For a full list of keys, see:
         https://api.arcade.academy/en/latest/arcade.key.html
         """
-        if key == arcade.key.SPACE:
+        if key == arcade.key.SPACE and self.current_status == GameState.NOT_STARTED:
             self.current_status = GameState.ROUND_ACTIVE
             print(f"{self.current_status}")
-
-
-    def on_key_release(self, key, key_modifiers):
-        """
-        Called whenever the user lets off a previously pressed key.
-        """
-        pass
-
-    def on_mouse_motion(self, x, y, delta_x, delta_y):
-        """
-        Called whenever the mouse moves.
-        """
-        pass
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """
         Called when the user presses a mouse button.
-        """
-        pass
-
-    def on_mouse_release(self, x, y, button, key_modifiers):
-        """
-        Called when a user releases a mouse button.
         """
         pass
 

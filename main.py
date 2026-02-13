@@ -22,11 +22,12 @@ class GameView(arcade.View):
     def __init__(self):
         super().__init__()
 
+        self.soustitre_jeu_roundfinijoueur = None
         self.soustitre_jeu_init = None
         self.soustitre_jeu_round = None
         self.sprite_list = arcade.SpriteList()
         self.background_color = arcade.color.DARK_GRAY
-
+        self.rock = attack_animation.sprite_rock_idle
         sprite_person = arcade.Sprite("fichier_images/person.jpg", 1.5, 350, 350)
         sprite_computer = arcade.Sprite("fichier_images/computer.jpg", 1.35, 950, 350)
         self.sprite_list.append(sprite_person)
@@ -41,13 +42,16 @@ class GameView(arcade.View):
     def reset(self):
         """Reset the game to the initial state."""
         # Do changes needed to restart the game here if you want to support that
-        self.soustitre_jeu_round = arcade.Text("appuye sur une image pour faire une attaque", 230, 500,
+        self.soustitre_jeu_round = arcade.Text("appuye sur une image pour faire une attaque", 300, 500,
                                                arcade.csscolor.DARK_BLUE,
                                                25, 1, "center", "Arial")
 
         self.soustitre_jeu_init = arcade.Text("appuye sur espace pour commencer une nouvelle ronde", 230, 500,
                                               arcade.csscolor.DARK_BLUE,
                                               25, 1, "center", "Arial")
+        self.soustitre_jeu_roundfinijoueur = arcade.Text("Le joueur a gagné la ronde", 230, 400,
+                                                         arcade.csscolor.DARK_BLUE,
+                                                         25, 1, "center", "Arial")
 
     def on_draw(self):
         """
@@ -63,9 +67,9 @@ class GameView(arcade.View):
             self.soustitre_jeu_init.draw()
         elif self.current_status == GameState.ROUND_ACTIVE:
             self.soustitre_jeu_round.draw()
-            attack_animation.attack_animations.draw()
+            attack_animation.idle_animations.draw()
         elif self.current_status == GameState.ROUND_DONE:
-            pass
+            self.soustitre_jeu_roundfinijoueur.draw()
         else:
             pass
 
@@ -95,7 +99,10 @@ class GameView(arcade.View):
         """
         Called when the user presses a mouse button.
         """
-        pass
+
+        if self.rock.collides_with_point((x, y)) and GameState.ROUND_ACTIVE:
+            self.rock.set_texture(attack_animation.sprite_rock_attack)
+            print("changed sprite to the attack variant")
 
 
 def main():

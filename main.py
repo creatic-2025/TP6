@@ -1,6 +1,7 @@
 import arcade
 from game_state import GameState
 import time
+import attack_animation
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -62,6 +63,7 @@ class GameView(arcade.View):
             self.soustitre_jeu_init.draw()
         elif self.current_status == GameState.ROUND_ACTIVE:
             self.soustitre_jeu_round.draw()
+            attack_animation.attack_animations.draw()
         elif self.current_status == GameState.ROUND_DONE:
             pass
         else:

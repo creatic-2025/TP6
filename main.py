@@ -10,6 +10,8 @@ WINDOW_TITLE = "Roche, Papier, Ciseaux mais low quality"
 text_that_hurts_your_eyes = True
 
 
+
+
 class GameView(arcade.View):
     """
     Main application class.
@@ -33,6 +35,7 @@ class GameView(arcade.View):
         self.sprite_list.append(sprite_person)
         self.sprite_list.append(sprite_computer)
         self.current_status = GameState.NOT_STARTED
+        self.player_attack_type = None
 
         self.reset()
 
@@ -84,6 +87,7 @@ class GameView(arcade.View):
         need it.
         """
 
+
     def on_key_press(self, key, key_modifiers):
         """
         Called whenever a key on the keyboard is pressed.
@@ -99,10 +103,11 @@ class GameView(arcade.View):
         """
         Called when the user presses a mouse button.
         """
-
-        if self.rock.collides_with_point((x, y)) and GameState.ROUND_ACTIVE:
-            self.rock.set_texture(attack_animation.sprite_rock_attack)
-            print("changed sprite to the attack variant")
+        if self.current_status == GameState.ROUND_ACTIVE:
+            if self.rock.collides_with_point((x, y)):
+                #self.rock.set_texture(attack_animation.sprite_rock_attack)
+                print("changed sprite to the attack variant")
+                self.player_attack_type = attack_animation.AttackType.ROCK
 
 
 def main():

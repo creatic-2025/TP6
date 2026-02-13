@@ -1,4 +1,16 @@
 import arcade
+from enum import Enum
+
+
+class AttackType(Enum):
+   """
+   Simple énumération pour représenter les différents types d'attaques.
+   """
+   ROCK = 0,
+   PAPER = 1,
+   SCISSORS = 2
+
+
 attack_animations = arcade.SpriteList()
 idle_animations = arcade.SpriteList()
 sprite_rock_idle = arcade.Sprite("fichier_images/srock.png", 1, 200, 115)

@@ -1,5 +1,3 @@
-import arcade
-import time
 import enum
 
 
@@ -8,6 +6,8 @@ class GameState(enum.Enum):
     ROUND_ACTIVE = 1
     ROUND_DONE = 2
     GAME_OVER = 3
+    VALIDATION = 4
+
 
 
 

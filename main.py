@@ -1,7 +1,8 @@
 import arcade
 from game_state import GameState
-import time
+import random
 import attack_animation
+from attack_animation import AttackType
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -30,12 +31,19 @@ class GameView(arcade.View):
         self.sprite_list = arcade.SpriteList()
         self.background_color = arcade.color.DARK_GRAY
         self.rock = attack_animation.sprite_rock_idle
+        self.paper = attack_animation.sprite_paper_idle
+        self.scissors = attack_animation.sprite_scissors_idle
         sprite_person = arcade.Sprite("fichier_images/person.jpg", 1.5, 350, 350)
         sprite_computer = arcade.Sprite("fichier_images/computer.jpg", 1.35, 950, 350)
         self.sprite_list.append(sprite_person)
         self.sprite_list.append(sprite_computer)
         self.current_status = GameState.NOT_STARTED
         self.player_attack_type = None
+        self.cpu_attack_type = None
+        self.points_joueur = 0
+        self.points_cpu = 0
+        self.validation_run = False
+        self.counter = 0
 
         self.reset()
 
@@ -73,6 +81,8 @@ class GameView(arcade.View):
             attack_animation.idle_animations.draw()
         elif self.current_status == GameState.ROUND_DONE:
             self.soustitre_jeu_roundfinijoueur.draw()
+        elif self.current_status == GameState.VALIDATION:
+            self.soustitre_jeu_round.draw()
         else:
             pass
 
@@ -86,6 +96,40 @@ class GameView(arcade.View):
         Normally, you'll call update() on the sprite lists that
         need it.
         """
+        for i in range(5):
+            if self.current_status == GameState.VALIDATION and not self.validation_run:
+                if self.player_attack_type == AttackType.ROCK and self.cpu_attack_type == AttackType.PAPER:
+                    self.points_cpu += 1
+                    print(f"Score: {self.points_cpu}-{self.points_joueur}")
+                if self.player_attack_type == AttackType.PAPER and self.cpu_attack_type == AttackType.PAPER:
+                    print(f"Nulle, Score: {self.points_cpu}-{self.points_joueur}")
+
+                if self.player_attack_type == AttackType.SCISSORS and self.cpu_attack_type == AttackType.PAPER:
+                    self.points_joueur += 1
+                    print(f"Score: {self.points_cpu}-{self.points_joueur}")
+
+                if self.player_attack_type == AttackType.ROCK and self.cpu_attack_type == AttackType.ROCK:
+                    print(f"Nulle, Score: {self.points_cpu}-{self.points_joueur}")
+
+                if self.player_attack_type == AttackType.PAPER and self.cpu_attack_type == AttackType.ROCK:
+                    self.points_joueur += 1
+                    print(f"Score: {self.points_cpu}-{self.points_joueur}")
+
+                if self.player_attack_type == AttackType.SCISSORS and self.cpu_attack_type == AttackType.ROCK:
+                    self.points_cpu += 1
+                    print(f"Score: {self.points_cpu}-{self.points_joueur}")
+
+                if self.player_attack_type == AttackType.ROCK and self.cpu_attack_type == AttackType.SCISSORS:
+                    self.points_joueur += 1
+                    print(f"Score: {self.points_cpu}-{self.points_joueur}")
+
+                if self.player_attack_type == AttackType.PAPER and self.cpu_attack_type == AttackType.SCISSORS:
+                    self.points_joueur += 1
+                    print(f"Score: {self.points_cpu}-{self.points_joueur}")
+
+                if self.player_attack_type == AttackType.SCISSORS and self.cpu_attack_type == AttackType.SCISSORS:
+                    print(f"Nulle, Score: {self.points_cpu}-{self.points_joueur}")
+
 
 
     def on_key_press(self, key, key_modifiers):
@@ -105,10 +149,22 @@ class GameView(arcade.View):
         """
         if self.current_status == GameState.ROUND_ACTIVE:
             if self.rock.collides_with_point((x, y)):
-                #self.rock.set_texture(attack_animation.sprite_rock_attack)
-                print("changed sprite to the attack variant")
+                print("You chose: rock")
                 self.player_attack_type = attack_animation.AttackType.ROCK
+                self.current_status = GameState.VALIDATION
+            if self.paper.collides_with_point((x, y)):
+                print("You chose: paper")
+                self.player_attack_type = attack_animation.AttackType.PAPER
+                self.current_status = GameState.VALIDATION
+            if self.scissors.collides_with_point((x, y)):
+                print("You chose: scissors")
+                self.player_attack_type = attack_animation.AttackType.SCISSORS
+                self.current_status = GameState.VALIDATION
 
+        if self.current_status == GameState.VALIDATION:
+            cpu_choices = [AttackType.ROCK, AttackType.PAPER, AttackType.SCISSORS]
+            self.cpu_attack_type = random.choice(cpu_choices)
+            print(f"Computer chose: {self.cpu_attack_type}")
 
 def main():
     """ Main function """

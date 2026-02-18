@@ -11,8 +11,6 @@ WINDOW_TITLE = "Roche, Papier, Ciseaux mais low quality"
 text_that_hurts_your_eyes = True
 
 
-
-
 class GameView(arcade.View):
     """
     Main application class.
@@ -25,6 +23,13 @@ class GameView(arcade.View):
     def __init__(self):
         super().__init__()
 
+        self.joueur_points_display = None
+        self.cpu_points_display = None
+        self.soustitre_jeu_gameover_nulle = None
+        self.soustitre_jeu_gameover_cpu = None
+        self.soustitre_jeu_gameover_joueur = None
+        self.soustitre_jeu_nulle = None
+        self.soustitre_jeu_roundfinicpu = None
         self.soustitre_jeu_roundfinijoueur = None
         self.soustitre_jeu_init = None
         self.soustitre_jeu_round = None
@@ -43,7 +48,14 @@ class GameView(arcade.View):
         self.points_joueur = 0
         self.points_cpu = 0
         self.validation_run = False
-        self.counter = 0
+        self.round_counter = 0
+        self.max_rounds = 5
+        self.cpu_gagne = False
+        self.joueur_gagne = False
+        self.nulle = False
+        self.joueur_gagne_partie = False
+        self.cpu_gagne_partie = False
+        self.nulle_partie = False
 
         self.reset()
 
@@ -60,9 +72,28 @@ class GameView(arcade.View):
         self.soustitre_jeu_init = arcade.Text("appuye sur espace pour commencer une nouvelle ronde", 230, 500,
                                               arcade.csscolor.DARK_BLUE,
                                               25, 1, "center", "Arial")
-        self.soustitre_jeu_roundfinijoueur = arcade.Text("Le joueur a gagné la ronde", 230, 400,
+        self.soustitre_jeu_roundfinijoueur = arcade.Text("Le joueur a gagné la ronde. Appuye sur espace pour "
+                                                         "commencer une autre.", 150, 500,
                                                          arcade.csscolor.DARK_BLUE,
-                                                         25, 1, "center", "Arial")
+                                                         20, 1, "center", "Arial")
+        self.soustitre_jeu_roundfinicpu = arcade.Text("L'ordinateur a gagné la ronde. Appuye sur espace pour "
+                                                      "commencer une autre.", 150, 500,
+                                                      arcade.csscolor.DARK_BLUE,
+                                                      20, 1, "center", "Arial")
+        self.soustitre_jeu_nulle = arcade.Text("Cette ronde a été nulle. Appuyer sur espace pour commencer une autre.",
+                                               150, 500, arcade.csscolor.DARK_BLUE, 20, 1, "center", "Arial")
+        self.soustitre_jeu_gameover_joueur = arcade.Text("LE JOUEUR... GAGNE LA PARTIE! Appuyer sur espace pour "
+                                                         "recommncer le jeu.", 150, 500,
+                                                         arcade.csscolor.DARK_BLUE,
+                                                         20, 1, "center", "Arial")
+        self.soustitre_jeu_gameover_cpu = arcade.Text("L'ORDINATEUR... GAGNE LA PARTIE! Appuyer sur espace pour "
+                                                      "recommencer le jeu.", 150, 500,
+                                                      arcade.csscolor.DARK_BLUE,
+                                                      20, 1, "center", "Arial")
+        self.soustitre_jeu_gameover_nulle = arcade.Text("Attend... QUOI?! La partie est nulle??? Appuyer sur espace "
+                                                        "pour reinitialiser le jeu.", 150, 500,
+                                                        arcade.csscolor.DARK_BLUE,
+                                                        20, 1, "center", "Arial")
 
     def on_draw(self):
         """
@@ -72,19 +103,34 @@ class GameView(arcade.View):
         # This command should happen before we start drawing. It will clear
         # the screen to the background color, and erase what we drew last frame.
         self.clear()
+        self.cpu_points_display = arcade.Text(f"{self.points_cpu}", 950, 175, arcade.csscolor.BLACK, 40)
+        self.joueur_points_display = arcade.Text(f"{self.points_joueur}", 350, 175, arcade.csscolor.BLACK, 40, 1,
+                                                 "center", "Arial")
         titre_jeu = arcade.Text("roche, papier, ciseaux", 375, 600, arcade.csscolor.BLACK, 40, 1, "center", "Arial")
         titre_jeu.draw()
+        self.cpu_points_display.draw()
+        self.joueur_points_display.draw()
         if self.current_status == GameState.NOT_STARTED:
             self.soustitre_jeu_init.draw()
         elif self.current_status == GameState.ROUND_ACTIVE:
             self.soustitre_jeu_round.draw()
             attack_animation.idle_animations.draw()
         elif self.current_status == GameState.ROUND_DONE:
-            self.soustitre_jeu_roundfinijoueur.draw()
+            if self.cpu_gagne:
+                self.soustitre_jeu_roundfinicpu.draw()
+            if self.joueur_gagne:
+                self.soustitre_jeu_roundfinijoueur.draw()
+            if self.nulle:
+                self.soustitre_jeu_nulle.draw()
         elif self.current_status == GameState.VALIDATION:
             self.soustitre_jeu_round.draw()
         else:
-            pass
+            if self.nulle_partie:
+                self.soustitre_jeu_gameover_nulle.draw()
+            if self.cpu_gagne_partie:
+                self.soustitre_jeu_gameover_cpu.draw()
+            if self.joueur_gagne_partie:
+                self.soustitre_jeu_gameover_joueur.draw()
 
         self.sprite_list.draw()
 
@@ -96,41 +142,60 @@ class GameView(arcade.View):
         Normally, you'll call update() on the sprite lists that
         need it.
         """
-        for i in range(5):
+        if self.round_counter <= self.max_rounds:
             if self.current_status == GameState.VALIDATION and not self.validation_run:
+                self.cpu_gagne = False
+                self.joueur_gagne = False
+                self.nulle = False
                 if self.player_attack_type == AttackType.ROCK and self.cpu_attack_type == AttackType.PAPER:
                     self.points_cpu += 1
                     print(f"Score: {self.points_cpu}-{self.points_joueur}")
+                    self.cpu_gagne = True
                 if self.player_attack_type == AttackType.PAPER and self.cpu_attack_type == AttackType.PAPER:
                     print(f"Nulle, Score: {self.points_cpu}-{self.points_joueur}")
-
+                    self.nulle = True
                 if self.player_attack_type == AttackType.SCISSORS and self.cpu_attack_type == AttackType.PAPER:
                     self.points_joueur += 1
                     print(f"Score: {self.points_cpu}-{self.points_joueur}")
-
+                    self.joueur_gagne = True
                 if self.player_attack_type == AttackType.ROCK and self.cpu_attack_type == AttackType.ROCK:
                     print(f"Nulle, Score: {self.points_cpu}-{self.points_joueur}")
-
+                    self.nulle = True
                 if self.player_attack_type == AttackType.PAPER and self.cpu_attack_type == AttackType.ROCK:
                     self.points_joueur += 1
                     print(f"Score: {self.points_cpu}-{self.points_joueur}")
-
+                    self.joueur_gagne = True
                 if self.player_attack_type == AttackType.SCISSORS and self.cpu_attack_type == AttackType.ROCK:
                     self.points_cpu += 1
                     print(f"Score: {self.points_cpu}-{self.points_joueur}")
-
+                    self.cpu_gagne = True
                 if self.player_attack_type == AttackType.ROCK and self.cpu_attack_type == AttackType.SCISSORS:
                     self.points_joueur += 1
                     print(f"Score: {self.points_cpu}-{self.points_joueur}")
-
+                    self.joueur_gagne = True
                 if self.player_attack_type == AttackType.PAPER and self.cpu_attack_type == AttackType.SCISSORS:
-                    self.points_joueur += 1
+                    self.points_cpu += 1
                     print(f"Score: {self.points_cpu}-{self.points_joueur}")
-
+                    self.cpu_gagne = True
                 if self.player_attack_type == AttackType.SCISSORS and self.cpu_attack_type == AttackType.SCISSORS:
                     print(f"Nulle, Score: {self.points_cpu}-{self.points_joueur}")
+                    self.nulle = True
 
+                self.round_counter += 1
+                self.current_status = GameState.ROUND_DONE
+                print("round done, waiting for space")
 
+        if self.round_counter > self.max_rounds:
+            if self.points_cpu > self.points_joueur:
+                self.cpu_gagne_partie = True
+            if self.points_joueur > self.points_cpu:
+                self.joueur_gagne_partie = True
+            if self.points_cpu == self.points_joueur:
+                self.nulle_partie = True
+            self.current_status = GameState.GAME_OVER
+            self.points_cpu = 0
+            self.points_joueur = 0
+            self.round_counter = 0
 
     def on_key_press(self, key, key_modifiers):
         """
@@ -142,6 +207,12 @@ class GameView(arcade.View):
         if key == arcade.key.SPACE and self.current_status == GameState.NOT_STARTED:
             self.current_status = GameState.ROUND_ACTIVE
             print(f"{self.current_status}")
+        if key == arcade.key.SPACE and self.current_status == GameState.ROUND_DONE:
+            self.current_status = GameState.ROUND_ACTIVE
+            print(f"{self.current_status}")
+        if key == arcade.key.SPACE and self.current_status == GameState.GAME_OVER:
+            self.current_status = GameState.NOT_STARTED
+            print(f"Nouvelle partie débuté, {self.current_status}")
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """
@@ -165,6 +236,7 @@ class GameView(arcade.View):
             cpu_choices = [AttackType.ROCK, AttackType.PAPER, AttackType.SCISSORS]
             self.cpu_attack_type = random.choice(cpu_choices)
             print(f"Computer chose: {self.cpu_attack_type}")
+
 
 def main():
     """ Main function """

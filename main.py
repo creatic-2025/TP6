@@ -6,7 +6,7 @@ from attack_animation import AttackType
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
-WINDOW_TITLE = "Roche, Papier, Ciseaux mais low quality"
+WINDOW_TITLE = "Roche, Papier, Ciseaux"
 
 text_that_hurts_your_eyes = True
 
@@ -34,12 +34,12 @@ class GameView(arcade.View):
         self.soustitre_jeu_init = None
         self.soustitre_jeu_round = None
         self.sprite_list = arcade.SpriteList()
-        self.background_color = arcade.color.DARK_GRAY
+        self.background_color = arcade.color.BLACK
         self.rock = attack_animation.sprite_rock_idle
         self.paper = attack_animation.sprite_paper_idle
         self.scissors = attack_animation.sprite_scissors_idle
-        sprite_person = arcade.Sprite("fichier_images/person.jpg", 1.5, 350, 350)
-        sprite_computer = arcade.Sprite("fichier_images/computer.jpg", 1.35, 950, 350)
+        sprite_person = arcade.Sprite("fichier_images/person.png", 0.35, 320, 350)
+        sprite_computer = arcade.Sprite("fichier_images/computer.png", 1.75, 960, 350)
         self.sprite_list.append(sprite_person)
         self.sprite_list.append(sprite_computer)
         self.current_status = GameState.NOT_STARTED
@@ -103,10 +103,22 @@ class GameView(arcade.View):
         # This command should happen before we start drawing. It will clear
         # the screen to the background color, and erase what we drew last frame.
         self.clear()
-        self.cpu_points_display = arcade.Text(f"{self.points_cpu}", 950, 175, arcade.csscolor.BLACK, 40)
-        self.joueur_points_display = arcade.Text(f"{self.points_joueur}", 350, 175, arcade.csscolor.BLACK, 40, 1,
-                                                 "center", "Arial")
-        titre_jeu = arcade.Text("roche, papier, ciseaux", 375, 600, arcade.csscolor.BLACK, 40, 1, "center", "Arial")
+        self.cpu_points_display = arcade.Text(f"{self.points_cpu}", 942, 210, arcade.csscolor.WHITE_SMOKE, 40, 1,
+                                              "center", "Speedster")
+        self.joueur_points_display = arcade.Text(f"{self.points_joueur}", 300, 210, arcade.csscolor.WHITE_SMOKE, 40, 1,
+                                                 "center", "Speedster")
+
+        """
+        DISPLAY DE L'ATTAQUE SÉLECTIONNÉ PAR LE JOUEUR
+        """
+        arcade.draw_lrbt_rectangle_outline(410, 500, 297, 401, arcade.csscolor.RED)
+        """
+        DISPLAY DE L'ATTAQUE SÉLECTIONNÉ PAR LE CPU
+        """
+        arcade.draw_lrbt_rectangle_outline(410, 500, 297, 401, arcade.csscolor.RED)
+
+        titre_jeu = arcade.Text("Roche, Papier, Ciseaux", 187, 600, arcade.csscolor.INDIANRED, 40, 1, "center",
+                                "Speedster")
         titre_jeu.draw()
         self.cpu_points_display.draw()
         self.joueur_points_display.draw()
@@ -193,8 +205,6 @@ class GameView(arcade.View):
             if self.points_cpu == self.points_joueur:
                 self.nulle_partie = True
             self.current_status = GameState.GAME_OVER
-            self.points_cpu = 0
-            self.points_joueur = 0
             self.round_counter = 0
 
     def on_key_press(self, key, key_modifiers):
@@ -212,6 +222,11 @@ class GameView(arcade.View):
             print(f"{self.current_status}")
         if key == arcade.key.SPACE and self.current_status == GameState.GAME_OVER:
             self.current_status = GameState.NOT_STARTED
+            self.points_cpu = 0
+            self.points_joueur = 0
+            self.joueur_gagne_partie = False
+            self.cpu_gagne_partie = False
+            self.nulle_partie = False
             print(f"Nouvelle partie débuté, {self.current_status}")
 
     def on_mouse_press(self, x, y, button, key_modifiers):

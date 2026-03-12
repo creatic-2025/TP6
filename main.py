@@ -8,8 +8,6 @@ WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 WINDOW_TITLE = "Roche, Papier, Ciseaux"
 
-text_that_hurts_your_eyes = True
-
 
 class GameView(arcade.View):
     """
@@ -144,10 +142,23 @@ class GameView(arcade.View):
             if self.joueur_gagne_partie:
                 self.soustitre_jeu_gameover_joueur.draw()
 
-
-
         # Call draw() on all your sprite lists below
         self.sprite_list.draw()
+
+        if self.player_attack_type == AttackType.ROCK:
+            attack_animation.attack_animation_rock_player.draw()
+        if self.player_attack_type == AttackType.PAPER:
+            attack_animation.attack_animation_paper_player.draw()
+        if self.player_attack_type == AttackType.SCISSORS:
+            attack_animation.attack_animation_scissors_player.draw()
+
+        if self.cpu_attack_type == AttackType.ROCK:
+            attack_animation.attack_animation_rock_cpu.draw()
+        if self.cpu_attack_type == AttackType.PAPER:
+            attack_animation.attack_animation_paper_cpu.draw()
+        if self.cpu_attack_type == AttackType.SCISSORS:
+            attack_animation.attack_animation_scissors_cpu.draw()
+
     def on_update(self, delta_time):
         """
         All the logic to move, and the game logic goes here.
@@ -219,6 +230,8 @@ class GameView(arcade.View):
             print(f"{self.current_status}")
         if key == arcade.key.SPACE and self.current_status == GameState.ROUND_DONE:
             self.current_status = GameState.ROUND_ACTIVE
+            self.player_attack_type = AttackType.NONE
+            self.cpu_attack_type = AttackType.NONE
             print(f"{self.current_status}")
         if key == arcade.key.SPACE and self.current_status == GameState.GAME_OVER:
             self.current_status = GameState.NOT_STARTED
@@ -227,6 +240,8 @@ class GameView(arcade.View):
             self.joueur_gagne_partie = False
             self.cpu_gagne_partie = False
             self.nulle_partie = False
+            self.player_attack_type = AttackType.NONE
+            self.cpu_attack_type = AttackType.NONE
             print(f"Nouvelle partie débuté, {self.current_status}")
 
     def on_mouse_press(self, x, y, button, key_modifiers):

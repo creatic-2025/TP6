@@ -65,35 +65,35 @@ class GameView(arcade.View):
     def reset(self):
         """Reset the game to the initial state."""
         # Do changes needed to restart the game here if you want to support that
-        self.soustitre_jeu_round = arcade.Text("appuye sur une image pour faire une attaque", 300, 500,
-                                               arcade.csscolor.DARK_BLUE,
-                                               25, 1, "center", "Arial")
+        self.soustitre_jeu_round = arcade.Text("Appuye sur une image pour faire une attaque", 153, 500,
+                                               arcade.csscolor.ORANGE,
+                                               23, 1, "center", "Speedster")
 
-        self.soustitre_jeu_init = arcade.Text("appuye sur espace pour commencer une nouvelle ronde", 230, 500,
-                                              arcade.csscolor.DARK_BLUE,
-                                              25, 1, "center", "Arial")
-        self.soustitre_jeu_roundfinijoueur = arcade.Text("Le joueur a gagné la ronde. Appuye sur espace pour "
-                                                         "commencer une autre.", 150, 500,
-                                                         arcade.csscolor.DARK_BLUE,
-                                                         20, 1, "center", "Arial")
-        self.soustitre_jeu_roundfinicpu = arcade.Text("L'ordinateur a gagné la ronde. Appuye sur espace pour "
-                                                      "commencer une autre.", 150, 500,
-                                                      arcade.csscolor.DARK_BLUE,
-                                                      20, 1, "center", "Arial")
-        self.soustitre_jeu_nulle = arcade.Text("Cette ronde a été nulle. Appuyer sur espace pour commencer une autre.",
-                                               150, 500, arcade.csscolor.DARK_BLUE, 20, 1, "center", "Arial")
+        self.soustitre_jeu_init = arcade.Text("Appuye sur espace pour commencer une nouvelle ronde", 40, 500,
+                                              arcade.csscolor.ORANGE,
+                                              23, 1, "center", "Speedster")
+        self.soustitre_jeu_roundfinijoueur = arcade.Text("Le joueur a gagne la ronde. Appuye sur espace pour "
+                                                         "commencer une autre.", 45, 500,
+                                                         arcade.csscolor.ORANGE,
+                                                         17, 1, "center", "Speedster")
+        self.soustitre_jeu_roundfinicpu = arcade.Text("L'ordinateur a gagne la ronde. Appuye sur espace pour "
+                                                      "commencer une autre.", 30, 500,
+                                                      arcade.csscolor.ORANGE,
+                                                      17, 1, "center", "Speedster")
+        self.soustitre_jeu_nulle = arcade.Text("Cette ronde est nulle. Appuyer sur espace pour commencer une autre.",
+                                               80, 500, arcade.csscolor.ORANGE, 17, 1, "center", "Speedster")
         self.soustitre_jeu_gameover_joueur = arcade.Text("LE JOUEUR... GAGNE LA PARTIE! Appuyer sur espace pour "
-                                                         "recommncer le jeu.", 150, 500,
-                                                         arcade.csscolor.DARK_BLUE,
-                                                         20, 1, "center", "Arial")
+                                                         "recommncer.", 60, 500,
+                                                         arcade.csscolor.ORANGE,
+                                                         15, 1, "center", "Speedster")
         self.soustitre_jeu_gameover_cpu = arcade.Text("L'ORDINATEUR... GAGNE LA PARTIE! Appuyer sur espace pour "
-                                                      "recommencer le jeu.", 150, 500,
-                                                      arcade.csscolor.DARK_BLUE,
-                                                      20, 1, "center", "Arial")
+                                                      "recommencer.", 30, 500,
+                                                      arcade.csscolor.ORANGE,
+                                                      15, 1, "center", "Speedster")
         self.soustitre_jeu_gameover_nulle = arcade.Text("Attend... QUOI?! La partie est nulle??? Appuyer sur espace "
-                                                        "pour reinitialiser le jeu.", 150, 500,
-                                                        arcade.csscolor.DARK_BLUE,
-                                                        20, 1, "center", "Arial")
+                                                        "pour reinitialiser.", 50, 500,
+                                                        arcade.csscolor.ORANGE,
+                                                        15, 1, "center", "Speedster")
 
     def on_draw(self):
         """
@@ -115,7 +115,7 @@ class GameView(arcade.View):
         """
         DISPLAY DE L'ATTAQUE SÉLECTIONNÉ PAR LE CPU
         """
-        arcade.draw_lrbt_rectangle_outline(410, 500, 297, 401, arcade.csscolor.RED)
+        arcade.draw_lrbt_rectangle_outline(780, 870, 297, 401, arcade.csscolor.RED)
 
         titre_jeu = arcade.Text("Roche, Papier, Ciseaux", 187, 600, arcade.csscolor.INDIANRED, 40, 1, "center",
                                 "Speedster")
@@ -144,10 +144,10 @@ class GameView(arcade.View):
             if self.joueur_gagne_partie:
                 self.soustitre_jeu_gameover_joueur.draw()
 
-        self.sprite_list.draw()
+
 
         # Call draw() on all your sprite lists below
-
+        self.sprite_list.draw()
     def on_update(self, delta_time):
         """
         All the logic to move, and the game logic goes here.

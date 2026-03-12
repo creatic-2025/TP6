@@ -3,6 +3,7 @@ from game_state import GameState
 import random
 import attack_animation
 from attack_animation import AttackType
+import time
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -158,6 +159,17 @@ class GameView(arcade.View):
             attack_animation.attack_animation_paper_cpu.draw()
         if self.cpu_attack_type == AttackType.SCISSORS:
             attack_animation.attack_animation_scissors_cpu.draw()
+
+        while self.joueur_gagne_partie:
+            self.joueur_points_display.color = arcade.csscolor.ORANGE
+            time.sleep(0.5)
+            self.joueur_points_display.color = arcade.csscolor.WHITE_SMOKE
+        while self.cpu_gagne_partie:
+            self.cpu_points_display.color = arcade.csscolor.ORANGE
+            time.sleep(0.5)
+            self.cpu_points_display.color = arcade.csscolor.WHITE_SMOKE
+
+
 
     def on_update(self, delta_time):
         """

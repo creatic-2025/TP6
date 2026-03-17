@@ -3,7 +3,7 @@ from game_state import GameState
 import random
 import attack_animation
 from attack_animation import AttackType
-import time
+from attack_animation import AttackAnimation
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -34,9 +34,9 @@ class GameView(arcade.View):
         self.soustitre_jeu_round = None
         self.sprite_list = arcade.SpriteList()
         self.background_color = arcade.color.BLACK
-        self.rock = attack_animation.sprite_rock_idle
-        self.paper = attack_animation.sprite_paper_idle
-        self.scissors = attack_animation.sprite_scissors_idle
+        self.rock = AttackAnimation(AttackType.ROCK)
+        self.paper = AttackAnimation(AttackType.PAPER)
+        self.scissors = AttackAnimation(AttackType.SCISSORS)
         sprite_person = arcade.Sprite("fichier_images/person.png", 0.35, 320, 350)
         sprite_computer = arcade.Sprite("fichier_images/computer.png", 1.75, 960, 350)
         self.sprite_list.append(sprite_person)
@@ -145,31 +145,6 @@ class GameView(arcade.View):
 
         # Call draw() on all your sprite lists below
         self.sprite_list.draw()
-
-        if self.player_attack_type == AttackType.ROCK:
-            attack_animation.attack_animation_rock_player.draw()
-        if self.player_attack_type == AttackType.PAPER:
-            attack_animation.attack_animation_paper_player.draw()
-        if self.player_attack_type == AttackType.SCISSORS:
-            attack_animation.attack_animation_scissors_player.draw()
-
-        if self.cpu_attack_type == AttackType.ROCK:
-            attack_animation.attack_animation_rock_cpu.draw()
-        if self.cpu_attack_type == AttackType.PAPER:
-            attack_animation.attack_animation_paper_cpu.draw()
-        if self.cpu_attack_type == AttackType.SCISSORS:
-            attack_animation.attack_animation_scissors_cpu.draw()
-
-        while self.joueur_gagne_partie:
-            self.joueur_points_display.color = arcade.csscolor.ORANGE
-            time.sleep(0.5)
-            self.joueur_points_display.color = arcade.csscolor.WHITE_SMOKE
-        while self.cpu_gagne_partie:
-            self.cpu_points_display.color = arcade.csscolor.ORANGE
-            time.sleep(0.5)
-            self.cpu_points_display.color = arcade.csscolor.WHITE_SMOKE
-
-
 
     def on_update(self, delta_time):
         """

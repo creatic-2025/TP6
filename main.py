@@ -37,6 +37,12 @@ class GameView(arcade.View):
         self.rock = AttackAnimation(AttackType.ROCK)
         self.paper = AttackAnimation(AttackType.PAPER)
         self.scissors = AttackAnimation(AttackType.SCISSORS)
+        self.rock_list = arcade.SpriteList()
+        self.paper_list = arcade.SpriteList()
+        self.scissors_list = arcade.SpriteList()
+        self.rock_list.append(self.rock)
+        self.paper_list.append(self.paper)
+        self.scissors_list.append(self.scissors)
         sprite_person = arcade.Sprite("fichier_images/person.png", 0.35, 320, 350)
         sprite_computer = arcade.Sprite("fichier_images/computer.png", 1.75, 960, 350)
         self.sprite_list.append(sprite_person)
@@ -125,7 +131,12 @@ class GameView(arcade.View):
             self.soustitre_jeu_init.draw()
         elif self.current_status == GameState.ROUND_ACTIVE:
             self.soustitre_jeu_round.draw()
-            attack_animation.idle_animations.draw()
+            self.rock.position = (190, 135)
+            self.paper.position = (340, 135)
+            self.scissors.position = (490, 135)
+            self.rock_list.draw()
+            self.paper_list.draw()
+            self.scissors_list.draw()
         elif self.current_status == GameState.ROUND_DONE:
             if self.cpu_gagne:
                 self.soustitre_jeu_roundfinicpu.draw()
@@ -152,6 +163,9 @@ class GameView(arcade.View):
         Normally, you'll call update() on the sprite lists that
         need it.
         """
+        self.rock.on_update(delta_time)
+        self.paper.on_update(delta_time)
+        self.scissors.on_update(delta_time)
         if self.round_counter <= self.max_rounds:
             if self.current_status == GameState.VALIDATION and not self.validation_run:
                 self.cpu_gagne = False
@@ -238,15 +252,15 @@ class GameView(arcade.View):
         if self.current_status == GameState.ROUND_ACTIVE:
             if self.rock.collides_with_point((x, y)):
                 print("You chose: rock")
-                self.player_attack_type = attack_animation.AttackType.ROCK
+                self.player_attack_type = self.rock
                 self.current_status = GameState.VALIDATION
             if self.paper.collides_with_point((x, y)):
                 print("You chose: paper")
-                self.player_attack_type = attack_animation.AttackType.PAPER
+                self.player_attack_type = self.paper
                 self.current_status = GameState.VALIDATION
             if self.scissors.collides_with_point((x, y)):
                 print("You chose: scissors")
-                self.player_attack_type = attack_animation.AttackType.SCISSORS
+                self.player_attack_type = self.scissors
                 self.current_status = GameState.VALIDATION
 
         if self.current_status == GameState.VALIDATION:

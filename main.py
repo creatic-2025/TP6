@@ -1,7 +1,6 @@
 import arcade
 from game_state import GameState
 import random
-import attack_animation
 from attack_animation import AttackType
 from attack_animation import AttackAnimation
 
@@ -125,11 +124,15 @@ class GameView(arcade.View):
         titre_jeu = arcade.Text("Roche, Papier, Ciseaux", 187, 600, arcade.csscolor.INDIANRED, 40, 1, "center",
                                 "Speedster")
         titre_jeu.draw()
+
         self.cpu_points_display.draw()
         self.joueur_points_display.draw()
         if self.current_status == GameState.NOT_STARTED:
             self.soustitre_jeu_init.draw()
         elif self.current_status == GameState.ROUND_ACTIVE:
+            """
+            RESET LES POSITIONS DE CHAQUE SPRITE ET DES TITRES
+            """
             self.soustitre_jeu_round.draw()
             self.rock.position = (190, 135)
             self.paper.position = (340, 135)
@@ -138,6 +141,27 @@ class GameView(arcade.View):
             self.paper_list.draw()
             self.scissors_list.draw()
         elif self.current_status == GameState.ROUND_DONE:
+            """
+            MONTRE LES SPRITES CHOISIS APRÈS CHAQUE TOUR ET LES SOUSTITRES
+            """
+            if self.player_attack_type == AttackType.ROCK:
+                self.rock.position = (455, 349)
+                self.rock_list.draw()
+            if self.player_attack_type == AttackType.PAPER:
+                self.paper.position = (465, 349)
+                self.paper_list.draw()
+            if self.player_attack_type == AttackType.SCISSORS:
+                self.scissors.position = (460, 349)
+                self.scissors_list.draw()
+            if self.cpu_attack_type == AttackType.ROCK:
+                self.rock.position = (825, 349)
+                self.rock_list.draw()
+            if self.cpu_attack_type == AttackType.PAPER:
+                self.paper.position = (835, 349)
+                self.paper_list.draw()
+            if self.cpu_attack_type == AttackType.SCISSORS:
+                self.scissors.position = (825, 349)
+                self.scissors_list.draw()
             if self.cpu_gagne:
                 self.soustitre_jeu_roundfinicpu.draw()
             if self.joueur_gagne:
@@ -147,12 +171,33 @@ class GameView(arcade.View):
         elif self.current_status == GameState.VALIDATION:
             self.soustitre_jeu_round.draw()
         else:
+            """
+            MONTRE LES SPRITES CHOISIS APRÈS CHAQUE TOUR ET LES SOUSTITRES
+            """
             if self.nulle_partie:
                 self.soustitre_jeu_gameover_nulle.draw()
             if self.cpu_gagne_partie:
                 self.soustitre_jeu_gameover_cpu.draw()
             if self.joueur_gagne_partie:
                 self.soustitre_jeu_gameover_joueur.draw()
+            if self.player_attack_type == AttackType.ROCK:
+                self.rock.position = (455, 349)
+                self.rock_list.draw()
+            if self.player_attack_type == AttackType.PAPER:
+                self.paper.position = (465, 349)
+                self.paper_list.draw()
+            if self.player_attack_type == AttackType.SCISSORS:
+                self.scissors.position = (460, 349)
+                self.scissors_list.draw()
+            if self.cpu_attack_type == AttackType.ROCK:
+                self.rock.position = (825, 349)
+                self.rock_list.draw()
+            if self.cpu_attack_type == AttackType.PAPER:
+                self.paper.position = (835, 349)
+                self.paper_list.draw()
+            if self.cpu_attack_type == AttackType.SCISSORS:
+                self.scissors.position = (825, 349)
+                self.scissors_list.draw()
 
         # Call draw() on all your sprite lists below
         self.sprite_list.draw()
@@ -252,15 +297,15 @@ class GameView(arcade.View):
         if self.current_status == GameState.ROUND_ACTIVE:
             if self.rock.collides_with_point((x, y)):
                 print("You chose: rock")
-                self.player_attack_type = self.rock
+                self.player_attack_type = AttackType.ROCK
                 self.current_status = GameState.VALIDATION
             if self.paper.collides_with_point((x, y)):
                 print("You chose: paper")
-                self.player_attack_type = self.paper
+                self.player_attack_type = AttackType.PAPER
                 self.current_status = GameState.VALIDATION
             if self.scissors.collides_with_point((x, y)):
                 print("You chose: scissors")
-                self.player_attack_type = self.scissors
+                self.player_attack_type = AttackType.SCISSORS
                 self.current_status = GameState.VALIDATION
 
         if self.current_status == GameState.VALIDATION:

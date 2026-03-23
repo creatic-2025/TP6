@@ -244,7 +244,6 @@ class GameView(arcade.View):
                 self.round_counter += 1
                 self.current_status = GameState.ROUND_DONE
 
-
         if self.round_counter > self.max_rounds:
             if self.points_cpu > self.points_joueur:
                 self.cpu_gagne_partie = True

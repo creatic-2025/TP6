@@ -218,41 +218,32 @@ class GameView(arcade.View):
                 self.nulle = False
                 if self.player_attack_type == AttackType.ROCK and self.cpu_attack_type == AttackType.PAPER:
                     self.points_cpu += 1
-                    print(f"Score: {self.points_cpu}-{self.points_joueur}")
                     self.cpu_gagne = True
                 if self.player_attack_type == AttackType.PAPER and self.cpu_attack_type == AttackType.PAPER:
-                    print(f"Nulle, Score: {self.points_cpu}-{self.points_joueur}")
                     self.nulle = True
                 if self.player_attack_type == AttackType.SCISSORS and self.cpu_attack_type == AttackType.PAPER:
                     self.points_joueur += 1
-                    print(f"Score: {self.points_cpu}-{self.points_joueur}")
                     self.joueur_gagne = True
                 if self.player_attack_type == AttackType.ROCK and self.cpu_attack_type == AttackType.ROCK:
-                    print(f"Nulle, Score: {self.points_cpu}-{self.points_joueur}")
                     self.nulle = True
                 if self.player_attack_type == AttackType.PAPER and self.cpu_attack_type == AttackType.ROCK:
                     self.points_joueur += 1
-                    print(f"Score: {self.points_cpu}-{self.points_joueur}")
                     self.joueur_gagne = True
                 if self.player_attack_type == AttackType.SCISSORS and self.cpu_attack_type == AttackType.ROCK:
                     self.points_cpu += 1
-                    print(f"Score: {self.points_cpu}-{self.points_joueur}")
                     self.cpu_gagne = True
                 if self.player_attack_type == AttackType.ROCK and self.cpu_attack_type == AttackType.SCISSORS:
                     self.points_joueur += 1
-                    print(f"Score: {self.points_cpu}-{self.points_joueur}")
                     self.joueur_gagne = True
                 if self.player_attack_type == AttackType.PAPER and self.cpu_attack_type == AttackType.SCISSORS:
                     self.points_cpu += 1
-                    print(f"Score: {self.points_cpu}-{self.points_joueur}")
                     self.cpu_gagne = True
                 if self.player_attack_type == AttackType.SCISSORS and self.cpu_attack_type == AttackType.SCISSORS:
-                    print(f"Nulle, Score: {self.points_cpu}-{self.points_joueur}")
                     self.nulle = True
 
                 self.round_counter += 1
                 self.current_status = GameState.ROUND_DONE
-                print("round done, waiting for space")
+
 
         if self.round_counter > self.max_rounds:
             if self.points_cpu > self.points_joueur:
@@ -273,12 +264,12 @@ class GameView(arcade.View):
         """
         if key == arcade.key.SPACE and self.current_status == GameState.NOT_STARTED:
             self.current_status = GameState.ROUND_ACTIVE
-            print(f"{self.current_status}")
+
         if key == arcade.key.SPACE and self.current_status == GameState.ROUND_DONE:
             self.current_status = GameState.ROUND_ACTIVE
             self.player_attack_type = AttackType.NONE
             self.cpu_attack_type = AttackType.NONE
-            print(f"{self.current_status}")
+
         if key == arcade.key.SPACE and self.current_status == GameState.GAME_OVER:
             self.current_status = GameState.NOT_STARTED
             self.points_cpu = 0
@@ -288,7 +279,6 @@ class GameView(arcade.View):
             self.nulle_partie = False
             self.player_attack_type = AttackType.NONE
             self.cpu_attack_type = AttackType.NONE
-            print(f"Nouvelle partie débuté, {self.current_status}")
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """
@@ -296,22 +286,18 @@ class GameView(arcade.View):
         """
         if self.current_status == GameState.ROUND_ACTIVE:
             if self.rock.collides_with_point((x, y)):
-                print("You chose: rock")
                 self.player_attack_type = AttackType.ROCK
                 self.current_status = GameState.VALIDATION
             if self.paper.collides_with_point((x, y)):
-                print("You chose: paper")
                 self.player_attack_type = AttackType.PAPER
                 self.current_status = GameState.VALIDATION
             if self.scissors.collides_with_point((x, y)):
-                print("You chose: scissors")
                 self.player_attack_type = AttackType.SCISSORS
                 self.current_status = GameState.VALIDATION
 
         if self.current_status == GameState.VALIDATION:
             cpu_choices = [AttackType.ROCK, AttackType.PAPER, AttackType.SCISSORS]
             self.cpu_attack_type = random.choice(cpu_choices)
-            print(f"Computer chose: {self.cpu_attack_type}")
 
 
 def main():
